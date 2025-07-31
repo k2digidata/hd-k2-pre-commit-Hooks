@@ -1,5 +1,5 @@
 # pre-commit-Hooks
-Frontend &amp; Backend
+Frontend &amp; Backend & Bandit
 
 ##### basic frontend project setup using **React** with **Husky**, **ESLint**, and **Prettier**, along with **pre-commit hooks** to enforce code quality.
 
