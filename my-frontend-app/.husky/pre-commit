@@ -1,4 +1,32 @@
-npm test
-prettier $(git diff --cached --name-only --diff-filter=ACMR | sed 's| |\\ |g') --write --ignore-unknown
-git update-index --again
-npx lint-staged
+#npm test
+#prettier $(git diff --cached --name-only --diff-filter=ACMR | sed 's| |\\ |g') --write --ignore-unknown
+#git update-index --again
+#npx lint-staged
+
+
+# Get staged files (Added, Copied, Modified, Renamed)
+FILES=$(git diff --cached --name-only --diff-filter=ACM | grep -E '\.(ts|tsx|js|jsx)$')
+
+# Filter only TS/JS/TSX/JSX files
+TS_FILES=$(echo "$FILES" | grep -E '\.(ts|tsx|js|jsx)$')
+
+if [ -z "$TS_FILES" ]; then
+  echo "No JS/TS files to check."
+  exit 0
+fi
+
+if [ $? -ne 0 ]; then
+  echo "❌ Prettier found unformatted files. Please run 'npx prettier --write' and re-stage your changes."
+  exit 1
+fi
+
+
+echo "🧼 Running Prettier..."
+npx prettier --check $TS_FILES
+# --write --ignore-unknown
+
+echo "🔍 Running ESLint..."
+npx eslint $TS_FILES --fix
+
+echo "🔎 Running TypeScript (only staged files)..."
+npx tsc -b --noEmit
